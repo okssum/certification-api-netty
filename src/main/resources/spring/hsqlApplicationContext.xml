@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:oxm="http://www.springframework.org/schema/oxm"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd">
+ 	
+ 	<context:component-scan base-package="ch09.apiserver" />
+ 	
+ 	<!-- HSQLDB를 인메모리로 실행하고 JDBC 드라이버를 생성 -->
+ 	<jdbc:embedded-database id="dataSource" type="HSQL">
+ 		<!-- HSQLDB가 실행될 때 수행할 스크립트를 지정 -->
+ 		<jdbc:script location="classpath:db/sql/create-table.sql" />
+		<jdbc:script location="classpath:db/sql/insert-data.sql" />
+ 	</jdbc:embedded-database>
+ 	
+ 	<!-- 마이바티스의 SqlSessionFactoryBean 클래스를 생성함 -->
+ 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+ 		<property name="dataSource" ref="dataSource" />
+ 		<property name="typeAliasesPackage" value="ch09.apiserver.mybatis" />
+ 		<!-- 마이바티스가 초기화될 때 아래 경로에 있는 마이바티스 매핑 파일을 로드함 -->
+ 		<property name="mapperLocations" value="classpath:ch09/apiserver/mybatis/*.xml" />
+ 	</bean>
+ 	
+ 	<bean id="sqlSession" class="org.mybatis.spring.SqlSessionTemplate">
+        <constructor-arg name="sqlSessionFactory" ref="sqlSessionFactory" />
+    </bean>
+ 	
+</beans>

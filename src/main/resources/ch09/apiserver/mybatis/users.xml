@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="users">
+	<select id="userList" resultType="map">
+		select * from NETTY_EXAMPLE_DB.USERS
+	</select>	
+	
+	<!-- 사용자 정보 조회 API에서 사용 -->
+	<select id="userInfoByEmail" parameterType="map" resultType="map">
+		select USERNO, USERID, PASSWORD
+		from NETTY_EXAMPLE_DB.USERS where USERID = #{email}
+	</select>
+	
+	<!-- 인증 발급 토큰 API에서 사용 -->
+	<select id="userInfoByPassword" parameterType="map" resultType="map">
+		select USERNO, USERID, PASSWORD
+		from NETTY_EXAMPLE_DB.USERS
+		where USERNO = #{userNo} and PASSWORD = #{password}
+	</select>
+</mapper>
